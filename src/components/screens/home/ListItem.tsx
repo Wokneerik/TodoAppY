@@ -10,14 +10,14 @@ import {
   Alert,
   FlatList,
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import tw from 'twrnc';
 import {db} from '../../../firebase';
-
+import LogoutButton from '../../ui/Logout';
 const COLORS = {primary: '#1f145c', white: '#fff'};
 
 const ListItem = () => {
@@ -124,122 +124,63 @@ const ListItem = () => {
 
   const ListItem = ({todo}) => {
     return (
-      <View style={styles.listItem}>
-        <View style={{flex: 1}}>
+      <View
+        style={tw`p-2 items-center bg-white flex-row elevation-12 rounded-4 my-3`}>
+        <View style={tw`flex-1`}>
           <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 15,
-              color: COLORS.primary,
-              textDecorationLine: todo?.completed ? 'line-through' : 'none',
-            }}>
+            style={tw`font-bold text-8 ${
+              todo?.completed ? 'line-through' : ''
+            }`}>
             {todo?.task}
           </Text>
         </View>
         {!todo?.completed && (
           <TouchableOpacity onPress={() => markTodoComplete(todo.id)}>
             <View
-              style={[styles.actionIcon, {backgroundColor: 'green'}]}></View>
+              style={tw`h-10 w-10 justify-center items-center bg-green-500 ml-5 rounded-3`}></View>
           </TouchableOpacity>
         )}
         <TouchableOpacity onPress={() => deleteTodo(todo.id)}>
-          <View style={styles.actionIcon}></View>
+          <View
+            style={tw`h-10 w-10 justify-center items-center bg-red-500 ml-5 rounded-3`}></View>
         </TouchableOpacity>
       </View>
     );
   };
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}>
-      <View style={styles.header}>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            fontSize: 20,
-            color: COLORS.primary,
-          }}>
-          TODO APP
-        </Text>
-      </View>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{padding: 20, paddingBottom: 100}}
-        data={todos}
-        renderItem={({item}) => <ListItem todo={item} />}
-      />
-
-      <View style={styles.footer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={textInput}
-            placeholder="Add Todo"
-            onChangeText={text => setTextInput(text)}
-          />
+    <>
+      <SafeAreaView>
+        <View style={tw`p-5 flex-row justify-center items-center`}>
+          <Text style={tw`font-bold text-7 text-blue-500`}>TODO APP</Text>
         </View>
-        <TouchableOpacity onPress={addTodo}>
-          <View style={styles.iconContainer}></View>
-        </TouchableOpacity>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{padding: 20, paddingBottom: 100}}
+          data={todos}
+          renderItem={({item}) => <ListItem todo={item} />}
+        />
+
+        <View
+          style={tw`absolute bottom-0 w-full flex-row items-center px-4 py-4 `}>
+          <View
+            style={tw`h-13 px-2 elevation-40 bg-white flex-1 my-1 mr-10 rounded-30 justify-center`}>
+            <TextInput
+              value={textInput}
+              placeholder="Add Todo"
+              onChangeText={text => setTextInput(text)}
+            />
+          </View>
+          <TouchableOpacity onPress={addTodo}>
+            <View
+              style={tw`h-12 w-12 bg-blue-500 elevation-40 rounded-25 justify-center items-center`}></View>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+      <View style={tw` mt-70`}>
+        <LogoutButton />
       </View>
-    </SafeAreaView>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: COLORS.white,
-  },
-  inputContainer: {
-    height: 50,
-    paddingHorizontal: 20,
-    elevation: 40,
-    backgroundColor: COLORS.white,
-    flex: 1,
-    marginVertical: 20,
-    marginRight: 20,
-    borderRadius: 30,
-  },
-  iconContainer: {
-    height: 50,
-    width: 50,
-    backgroundColor: COLORS.primary,
-    elevation: 40,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  listItem: {
-    padding: 20,
-    backgroundColor: COLORS.white,
-    flexDirection: 'row',
-    elevation: 12,
-    borderRadius: 7,
-    marginVertical: 10,
-  },
-  actionIcon: {
-    height: 25,
-    width: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    marginLeft: 5,
-    borderRadius: 3,
-  },
-  header: {
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
 
 export default ListItem;
